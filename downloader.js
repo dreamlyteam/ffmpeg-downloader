@@ -8,10 +8,10 @@ const { exec } = require('child_process')
  * Downloads the FFMPEG binary.
  * @return {Promise<string>} - Output of ffmpeg -version
  */
-function updateBinary () {
+function updateBinary (name = 'ffmpeg') {
   return new Promise((resolve, reject) => {
     const dir = `bin/${process.platform}/${process.arch}`
-    const bin = `${dir}/ffmpeg${process.platform === 'win32' ? '.exe' : ''}`
+    const bin = `${dir}/${name}${process.platform === 'win32' ? '.exe' : ''}`
     const dest = path.join(__dirname, bin)
     mkdirp.sync(dir)
 
@@ -33,6 +33,11 @@ if (require.main === module) {
   // CLI
   console.log(`Downloading ffmpeg ${process.platform} ${process.arch}...`)
   updateBinary().then(version => {
+    console.log(version)
+  }).then(() => {
+    console.log(`Downloading ffprobe ${process.platform} ${process.arch}...`)
+    return updateBinary('ffprobe')
+  }).then(version => {
     console.log(version)
     process.exit()
   }).catch(e => {

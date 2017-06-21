@@ -12,8 +12,8 @@ function updateBinary () {
   return new Promise((resolve, reject) => {
     const dir = `bin/${process.platform}/${process.arch}`
     const bin = `${dir}/ffmpeg${process.platform === 'win32' ? '.exe' : ''}`
-    const dest = path.join(__dirname, dir)
-    mkdirp.sync(dest)
+    const dest = path.join(__dirname, bin)
+    mkdirp.sync(dir)
 
     // Get the latest version
     request.get(`https://github.com/FocaBot/ffmpeg-downloader/raw/master/${bin}`)

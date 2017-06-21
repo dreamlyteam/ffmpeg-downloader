@@ -16,3 +16,11 @@ downloads only the required files.
    - linux arm (armel)
  - macOS
    - darwin x64
+
+## Usage
+
+ffmpeg-downloader downloads ffmpeg during `npm install`
+
+```javascript
+const ffmpegPath = require('ffmpeg-downloader').path
+```

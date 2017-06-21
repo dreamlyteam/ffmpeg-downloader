@@ -1,0 +1,25 @@
+{
+  "name": "ffmpeg-downloader",
+  "version": "1.0.0",
+  "description": "Downloads static FFMPEG builds (linux, osx, windows)",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node downloader"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/FocaBot/ffmpeg-downloader"
+  },
+  "keywords": [
+    "ffmpeg",
+    "static",
+    "download",
+    "binary"
+  ],
+  "author": "TheBITLINK aka BIT <me@thebitlink.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "request": "^2.81.0"
+  }
+}

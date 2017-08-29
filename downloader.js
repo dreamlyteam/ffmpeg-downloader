@@ -17,6 +17,7 @@ function updateBinary (name = 'ffmpeg') {
     const dest = path.join(__dirname, bin)
     const fname = `${platform}-${process.arch}.tar.bz2`
     const tmp = path.join(__dirname, 'bin', fname)
+    fs.mkdirSync(path.join(__dirname, 'bin'))
     let bar
 
     // Get the latest version

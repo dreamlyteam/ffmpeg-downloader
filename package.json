@@ -1,6 +1,6 @@
 {
   "name": "ffmpeg-downloader",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Downloads static FFMPEG builds (linux, osx, windows)",
   "main": "index.js",
   "scripts": {

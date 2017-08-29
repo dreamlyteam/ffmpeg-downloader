@@ -13,11 +13,11 @@ const { exec } = require('child_process')
 function updateBinary (name = 'ffmpeg') {
   return new Promise((resolve, reject) => {
     const dir = `bin/${platform}/${process.arch}`
-    const bin = `${dir}/${name}${process.platform === 'win32' ? '.exe' : ''}`
+    const bin = `${dir}/${name}${platform === 'win32' ? '.exe' : ''}`
     const dest = path.join(__dirname, bin)
     const fname = `${platform}-${process.arch}.tar.bz2`
     const tmp = path.join(__dirname, 'bin', fname)
-    fs.mkdirSync(path.join(__dirname, 'bin'))
+    try { fs.mkdirSync(path.join(__dirname, 'bin')) } catch(e) {}
     let bar
 
     // Get the latest version

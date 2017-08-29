@@ -10,10 +10,11 @@ downloads only the required files.
  - Windows
    - win32 ia32
    - win32 x64
- - Linux
+ - Linux / Android
    - linux ia32 (i386)
    - linux x64 (x86_64)
    - linux arm (armel)
+   - linux arm64 (aarch64)
  - macOS
    - darwin x64
 

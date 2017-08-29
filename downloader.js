@@ -34,7 +34,9 @@ function updateBinary (name = 'ffmpeg') {
     })
     .on('end', () => setTimeout(() => {
       bar.tick(bar.total - bar.curr)
-      decompress(tmp, path.join(__dirname, 'bin').then(f => {
+      console.log('Decompressing...')
+      decompress(tmp, path.join(__dirname, 'bin')).then(f => {
+        fs.unlinkSync(tmp)
         // Try to get the version number
         exec(dest + ' -version', (error, stdout, stderr) => {
           if (error || stderr.length) return reject(error || stderr)

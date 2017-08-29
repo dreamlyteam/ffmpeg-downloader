@@ -1,7 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const request = require('request')
-const mkdirp = require('mkdirp')
+const ProgressBar = require('progress')
+const decompress = require('decompress')
+const platform = process.platform == 'android' ? 'linux' : process.platform // Termux fix
 const { exec } = require('child_process')
 
 /**
@@ -10,22 +12,37 @@ const { exec } = require('child_process')
  */
 function updateBinary (name = 'ffmpeg') {
   return new Promise((resolve, reject) => {
-    const dir = `bin/${process.platform}/${process.arch}`
+    const dir = `bin/${platform}/${process.arch}`
     const bin = `${dir}/${name}${process.platform === 'win32' ? '.exe' : ''}`
     const dest = path.join(__dirname, bin)
-    mkdirp.sync(dir)
+    const fname = `${platform}-${process.arch}.tar.bz2`
+    const tmp = path.join(__dirname, 'bin', fname)
+    let bar
 
     // Get the latest version
-    request.get(`https://github.com/FocaBot/ffmpeg-downloader/raw/master/${bin}`)
-    .on('error', e => reject(e)) // Handle errors
+    const req = request.get(`https://github.com/FocaBot/ffmpeg-downloader/raw/master/bin/${platform}-${process.arch}.tar.bz2`)
+    req.on('error', e => reject(e)) // Handle errors
+    .on('data', c => {
+      bar = bar || new ProgressBar(`${fname} [:bar] :percent (ETA: :etas)`, {
+        complete: '=',
+        incomplete: ' ',
+        width: 25,
+        total: parseInt(req.response.headers['content-length'])
+      })
+
+      bar.tick(c.length)
+    })
     .on('end', () => setTimeout(() => {
-      // Try to get the version number
-      exec(dest + ' -version', (error, stdout, stderr) => {
-        if (error || stderr.length) return reject(error || stderr)
-        resolve(stdout)
+      bar.tick(bar.total - bar.curr)
+      decompress(tmp, path.join(__dirname, 'bin').then(f => {
+        // Try to get the version number
+        exec(dest + ' -version', (error, stdout, stderr) => {
+          if (error || stderr.length) return reject(error || stderr)
+          resolve(stdout)
+        })
       })
     }, 1000))
-    .pipe(fs.createWriteStream(dest, { mode: 0o755 }))
+    .pipe(fs.createWriteStream(tmp, { mode: 0o755 }))
   })
 }
 
@@ -34,12 +51,6 @@ if (require.main === module) {
   console.log(`Downloading ffmpeg ${process.platform} ${process.arch}...`)
   updateBinary().then(version => {
     console.log(version)
-  }).then(() => {
-    console.log(`Downloading ffprobe ${process.platform} ${process.arch}...`)
-    return updateBinary('ffprobe')
-  }).then(version => {
-    console.log(version)
-    process.exit()
   }).catch(e => {
     console.error(e)
     process.exit(1)

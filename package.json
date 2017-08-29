@@ -19,7 +19,9 @@
   "author": "TheBITLINK aka BIT <me@thebitlink.com>",
   "license": "MIT",
   "dependencies": {
+    "decompress": "^4.2.0",
     "mkdirp": "^0.5.1",
+    "progress": "^2.0.0",
     "request": "^2.81.0"
   }
 }

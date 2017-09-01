@@ -39,7 +39,7 @@ function updateBinary (name = 'ffmpeg') {
       decompress(tmp, path.join(__dirname, 'bin')).then(f => {
         fs.unlinkSync(tmp)
         // Try to get the version number
-        exec(dest + ' -version', (error, stdout, stderr) => {
+        execFile(dest, ['-version'], (error, stdout, stderr) => {
           if (error || stderr.length) return reject(error || stderr)
           resolve(stdout)
         })

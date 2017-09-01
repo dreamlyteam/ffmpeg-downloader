@@ -4,7 +4,7 @@ const request = require('request')
 const ProgressBar = require('progress')
 const decompress = require('decompress')
 const platform = process.platform == 'android' ? 'linux' : process.platform // Termux fix
-const { exec } = require('child_process')
+const { execFile } = require('child_process')
 
 /**
  * Downloads the FFMPEG binary.

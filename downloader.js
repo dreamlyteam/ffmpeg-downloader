@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const request = require('request')
 const ProgressBar = require('progress')
@@ -12,16 +12,19 @@ const { execFile } = require('child_process')
  */
 function updateBinary (name = 'ffmpeg') {
   return new Promise((resolve, reject) => {
-    const dir = `bin/${platform}/${process.arch}`
-    const bin = `${dir}/${name}${platform === 'win32' ? '.exe' : ''}`
+    const dir = `bin/${os}/${arch}`
+    const bin = `${dir}/${name}${os === 'win32' ? '.exe' : ''}`
     const dest = path.join(__dirname, bin)
-    const fname = `${platform}-${process.arch}.tar.bz2`
+    const fname = `${os}-${arch}.tar.bz2`
     const tmp = path.join(__dirname, 'bin', fname)
     try { fs.mkdirSync(path.join(__dirname, 'bin')) } catch(e) {}
     let bar
 
+	// Cleanup directory
+	fs.emptyDirSync('bin');
+
     // Get the latest version
-    const req = request.get(`https://github.com/FocaBot/ffmpeg-downloader/raw/master/bin/${platform}-${process.arch}.tar.bz2`)
+    const req = request.get(`https://github.com/FocaBot/ffmpeg-downloader/raw/master/bin/${platform}-${arch}.tar.bz2`)
     req.on('error', e => reject(e)) // Handle errors
     .on('data', c => {
       bar = bar || new ProgressBar(`${fname} [:bar] :percent (ETA: :etas)`, {
@@ -37,12 +40,17 @@ function updateBinary (name = 'ffmpeg') {
       bar.tick(bar.total - bar.curr)
       console.log('Decompressing...')
       decompress(tmp, path.join(__dirname, 'bin')).then(f => {
-        fs.unlinkSync(tmp)
+        fs.unlinkSync(tmp);
         // Try to get the version number
-        execFile(dest, ['-version'], (error, stdout, stderr) => {
-          if (error || stderr.length) return reject(error || stderr)
-          resolve(stdout)
-        })
+		// Skip this if not the same arch/os as what launched it
+		if (os === platform && arch === process.arch) {
+			execFile(dest, ['-version'], (error, stdout, stderr) => {
+			if (error || stderr.length) return reject(error || stderr) ;
+			resolve(stdout);
+			})
+		} else {			
+			resolve('Platform and arch are different than this system, cannot display ffmpeg version'); 
+		}
       })
     }, 1000))
     .pipe(fs.createWriteStream(tmp, { mode: 0o755 }))
@@ -51,7 +59,17 @@ function updateBinary (name = 'ffmpeg') {
 
 if (require.main === module) {
   // CLI
-  console.log(`Downloading ffmpeg ${process.platform} ${process.arch}...`)
+  if (process.argv[2] != '') {
+	  var os = process.argv[2];
+  } else {
+	  var os = platform;
+  }
+  if (process.argv[3] != '') {
+	  var arch = process.argv[3];
+  } else {
+	  var arch = process.arch;
+  }
+  console.log(`Downloading ffmpeg ${os} ${arch}...`)
   updateBinary().then(version => {
     console.log(version)
   }).catch(e => {

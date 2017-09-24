@@ -17,9 +17,13 @@
     "binary"
   ],
   "author": "TheBITLINK aka BIT <me@thebitlink.com>",
+  "contributors": [
+    "Guillaume Lebigot <axel@teri-chan.net>"
+  ],
   "license": "MIT",
   "dependencies": {
     "decompress": "^4.2.0",
+    "fs-extra": "^4.0.2",
     "progress": "^2.0.0",
     "request": "^2.81.0"
   }

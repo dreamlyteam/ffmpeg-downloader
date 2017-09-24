@@ -15,7 +15,7 @@ const { execFile } = require('child_process')
 function updateBinary (os = platform, arch = process.arch) {
   return new Promise((resolve, reject) => {
     const dir = `bin/${os}/${arch}`
-    const bin = `${dir}/${ffmpeg}${os === 'win32' ? '.exe' : ''}`
+    const bin = `${dir}/ffmpeg${os === 'win32' ? '.exe' : ''}`
     const dest = path.join(__dirname, bin)
     const fname = `${os}-${arch}.tar.bz2`
     const tmp = path.join(__dirname, 'bin', fname)
@@ -63,7 +63,7 @@ if (require.main === module) {
   // CLI
   const targetOS = process.argv[2] || platform
   const targetArch = process.argv[3] || process.arch
-  console.log(`Downloading ffmpeg ${os} ${arch}...`)
+  console.log(`Downloading ffmpeg ${targetOS} ${targetArch}...`)
   updateBinary(targetOS, targetArch).then(version => {
     console.log(version)
   }).catch(e => {

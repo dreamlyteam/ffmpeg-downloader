@@ -20,8 +20,18 @@ downloads only the required files.
 
 ## Usage
 
+### As a module
+
 ffmpeg-downloader downloads ffmpeg during `npm install`
 
 ```javascript
 const ffmpegPath = require('ffmpeg-downloader').path
 ```
+
+### Command-line
+
+```
+node downloader darwin x64
+``` 
+
+Even if you're on a windows platform, will download the OSX binary for fetching purposes. Useful for making builds of your app for different systems than the one you're on.

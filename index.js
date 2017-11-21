@@ -7,7 +7,6 @@ const path = require('path')
 
 module.exports = {
   download: require('./downloader'),
-  path: path.join(__dirname, bin),
-  probePath: path.join(__dirname, probeBin)
+  path: platform === 'freebsd' ? '/usr/local/bin/ffmpeg' : path.join(__dirname, bin),
+  probePath: platform === 'freebsd' ? '/usr/local/bin/ffprobe' : path.join(__dirname, probeBin)
 }
-

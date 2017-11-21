@@ -14,6 +14,12 @@ const { execFile } = require('child_process')
  */
 function updateBinary (os = platform, arch = process.arch) {
   return new Promise((resolve, reject) => {
+    if (platform === 'freebsd') return resolve(`
+There are no static ffmpeg builds for FreeBSD currently available.
+The module will try to use the system-wide installation.
+
+Install it by running "pkg install ffmpeg" or via ports.
+`) 
     const dir = `bin/${os}/${arch}`
     const bin = `${dir}/ffmpeg${os === 'win32' ? '.exe' : ''}`
     const dest = path.join(__dirname, bin)
